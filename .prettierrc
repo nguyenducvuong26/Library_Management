@@ -1,0 +1,27 @@
+{
+  "endOfLine": "lf",
+  "printWidth": 80,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "semi": false,
+  "jsxSingleQuote": true,
+  "useTabs": false,
+  "tabWidth": 2,
+  "arrowParens": "always",
+  "importOrder": [
+    "^(react)|^(react-(.*)$)|^(react/(.*)$)|^(react$)",
+    "<THIRD_PARTY_MODULES>",
+    "^components/(.*)$",
+    "^(config)",
+    "^contexts/(.*)$",
+    "^guards/(.*)$",
+    "^layouts/(.*)$",
+    "^redux/(.*)$",
+    "^routes/(.*)$",
+    "^sections/(.*)$",
+    "^utils/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}

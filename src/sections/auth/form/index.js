@@ -1,4 +1,7 @@
-import { Button, Form, Input } from 'antd'
+import { useContext, useState } from 'react'
+
+import { Alert, Button, Form, Input } from 'antd'
+import { AuthContext } from 'context/auth'
 import PropTypes from 'prop-types'
 
 import { AUTH_FORM_TYPE } from '../config'
@@ -8,22 +11,38 @@ AuthForm.propTypes = {
 }
 
 export default function AuthForm({ type }) {
+  const { login } = useContext(AuthContext)
+  const [error, setError] = useState('')
   const isSignInTab = AUTH_FORM_TYPE.SIGN_IN === type
 
-  const onFinish = (values) => {
-    console.log('Success:', values)
+  const onFinish = async (values) => {
+    try {
+      const { email, password } = values
+
+      await login(email, password)
+    } catch (error) {
+      setError(error.message || 'Something went wrong')
+    }
   }
 
   return (
-    <div>
+    <>
       <Form
         layout='vertical'
         size='large'
         style={{
-          width: 436,
+          width: 450,
+          margin: 'auto',
         }}
+        className='xs:w-full '
         onFinish={onFinish}
       >
+        {error && (
+          <div className='mb-3'>
+            <Alert message={error} type='error' showIcon />
+          </div>
+        )}
+
         {!isSignInTab && (
           <Form.Item
             label='Name'
@@ -64,10 +83,6 @@ export default function AuthForm({ type }) {
               required: true,
               message: 'Password is required',
             },
-            {
-              min: 8,
-              message: 'Password must be at least 8 characters',
-            },
           ]}
         >
           <Input.Password />
@@ -101,11 +116,11 @@ export default function AuthForm({ type }) {
         )}
 
         <Form.Item>
-          <Button className='w-full' type='primary' htmlType='submit'>
+          <Button className='w-full mt-4' type='primary' htmlType='submit'>
             {isSignInTab ? 'Sign In' : 'Sign Up'}
           </Button>
         </Form.Item>
       </Form>
-    </div>
+    </>
   )
 }

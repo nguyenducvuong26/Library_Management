@@ -1,3 +1,4 @@
+import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import {
@@ -9,6 +10,9 @@ import {
   UserOutlined,
 } from '@ant-design/icons'
 import { Avatar, Dropdown, Menu } from 'antd'
+import { AuthContext } from 'context/auth'
+
+import { PAGES, ROLE_BY_PAGE } from 'config'
 
 import { PATH_DASHBOARD } from 'routes/paths'
 
@@ -20,14 +24,44 @@ function getItem(label, key, icon) {
   }
 }
 
-const NAV_ITEMS = [
-  { type: 'divider' },
-  getItem('Dashboard', 'dashboard', <AppstoreOutlined />),
-  getItem('Library', 'library', <BankOutlined />),
-  getItem('Loans', 'loans', <CalendarOutlined />),
-  getItem('Orders', 'orders', <ShoppingCartOutlined />),
-  getItem('Members', 'members', <UserOutlined />),
+const NAV_ITEMS_CONFIG = [
+  {
+    label: 'Dashboard',
+    key: 'dashboard',
+    icon: <AppstoreOutlined />,
+    roles: ROLE_BY_PAGE[PAGES.Dashboard],
+  },
+  {
+    label: 'Library',
+    key: 'library',
+    icon: <BankOutlined />,
+    roles: ROLE_BY_PAGE[PAGES.Library],
+  },
+  {
+    label: 'Loans',
+    key: 'loans',
+    icon: <CalendarOutlined />,
+    roles: ROLE_BY_PAGE[PAGES.Loans],
+  },
+  {
+    label: 'Orders',
+    key: 'orders',
+    icon: <ShoppingCartOutlined />,
+    roles: ROLE_BY_PAGE[PAGES.Orders],
+  },
+  {
+    label: 'Members',
+    key: 'members',
+    icon: <UserOutlined />,
+    roles: ROLE_BY_PAGE[PAGES.Members],
+  },
 ]
+
+const NAV_ITEMS_BY_ROLE = (role) =>
+  NAV_ITEMS_CONFIG.map(
+    ({ label, key, icon, roles }) =>
+      roles.includes(role) && getItem(label, key, icon)
+  )
 
 const DROP_DOWN_ITEMS = [
   {
@@ -38,12 +72,21 @@ const DROP_DOWN_ITEMS = [
 
 export default function Sidebar() {
   const navigate = useNavigate()
+  const { logout, user } = useContext(AuthContext)
+  const { role } = user
+
+  const handleSelectDropdownItem = (e) => {
+    if (e.key === 'logout') logout()
+  }
 
   return (
     <div className='h-full'>
       <div className='p-4'>Logo</div>
 
-      <Dropdown trigger='click' menu={{ items: DROP_DOWN_ITEMS }}>
+      <Dropdown
+        trigger='click'
+        menu={{ items: DROP_DOWN_ITEMS, onClick: handleSelectDropdownItem }}
+      >
         <div className='flex p-4 justify-between items-center'>
           <div className='flex justify-between items-center'>
             <Avatar size={42}>A</Avatar>
@@ -69,7 +112,7 @@ export default function Sidebar() {
           border: 'none',
         }}
         mode='inline'
-        items={NAV_ITEMS}
+        items={NAV_ITEMS_BY_ROLE(role)}
       />
     </div>
   )

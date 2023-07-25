@@ -1,28 +1,30 @@
-// import loadable from '@loadable/component'
+import { useContext } from 'react'
+
+import { AuthContext } from 'context/auth'
 import PropTypes from 'prop-types'
 
-// hooks
-// import useRole from 'hooks/useRole'
-
-// const Forbidden = loadable(() => import('components/Forbidden'))
+import Forbidden from 'components/Forbidden'
 
 RoleBasedGuard.propTypes = {
-  // hasContent: PropTypes.bool,
-  // roles: PropTypes.arrayOf(PropTypes.string), // Example ['Director', 'Leader', 'Memeber']
+  hasContent: PropTypes.bool,
+  roles: PropTypes.arrayOf(PropTypes.string), // Example ['Director', 'Leader', 'Memeber']
   children: PropTypes.node.isRequired,
 }
 
 export default function RoleBasedGuard({
-  // hasContent = false,
-  // roles = [],
+  hasContent = false,
+  roles = [],
   children,
 }) {
-  // const { checkAccessPermission } = useRole()
-  // const hasRole = checkAccessPermission(roles)
+  const { user } = useContext(AuthContext)
 
-  // if (!hasRole) {
-  //   return hasContent ? <Forbidden /> : null
-  // }
+  const { role } = user
+
+  const hasRole = [].concat(roles).includes(role)
+
+  if (!hasRole) {
+    return hasContent ? <Forbidden /> : null
+  }
 
   return <>{children}</>
 }

@@ -1,10 +1,16 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+} from 'firebase/auth'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
 import jwtDecode from 'jwt-decode'
 import PropTypes from 'prop-types'
 
-import { app } from 'utils/firebase'
+import { auth, db } from 'utils/firebase'
 
 export const AuthContext = createContext({
   user: null,
@@ -20,8 +26,6 @@ AuthProvider.propTypes = {
 }
 
 let expiredTimer
-
-const auth = getAuth(app)
 
 export default function AuthProvider({ children }) {
   const [isInitialized, setIsInitialized] = useState(false)
@@ -43,6 +47,54 @@ export default function AuthProvider({ children }) {
       uid = '',
     } = user
 
+    const currentUser = (await getDoc(doc(db, 'users', uid))).data()
+
+    localStorage.setItem('token', _tokenResponse.idToken)
+    localStorage.setItem('expireTime', new Date().getTime() + 3.6 * 10 ** 6)
+
+    setIsAuthenticated(true)
+    setUser({
+      id: uid,
+      displayName,
+      email: userEmail,
+      photoURL,
+      role: currentUser.role,
+    })
+  }
+
+  const logout = async () => {
+    console.log('Run')
+    await signOut(auth)
+
+    localStorage.removeItem('token')
+    localStorage.removeItem('expireTime')
+
+    setIsAuthenticated(false)
+    setUser(null)
+  }
+
+  const register = async (name, email, password) => {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    )
+    const { _tokenResponse, user = {} } = userCredential
+    const {
+      displayName = '',
+      email: userEmail = '',
+      photoURL = '',
+      uid = '',
+    } = user
+
+    await updateProfile(auth.currentUser, { displayName: name })
+    await setDoc(doc(db, 'users', uid), {
+      displayName: name,
+      email: userEmail,
+      photoURL,
+      role: 'Member',
+    })
+
     localStorage.setItem('token', _tokenResponse.idToken)
     localStorage.setItem('expireTime', new Date().getTime() + 3.6 * 10 ** 6)
 
@@ -56,45 +108,28 @@ export default function AuthProvider({ children }) {
     })
   }
 
-  const logout = async () => {
-    await signOut(auth)
-
-    localStorage.removeItem('token')
-    localStorage.removeItem('expireTime')
-
-    setIsAuthenticated(false)
-    setUser(null)
-  }
-
-  const register = () => {
-    console.log('Register')
-  }
-
   useEffect(() => {
-    function init() {
+    async function init() {
       const token = localStorage.getItem('token')
       const expireTime = localStorage.getItem('expireTime')
 
       const currentTime = new Date().getTime()
       const timeLeft = expireTime - currentTime
-      const isExpired = timeLeft < 10000 // 30 seconds
+      const isExpired = timeLeft < 10000 // 10 seconds
 
       if (token && !isExpired) {
-        const {
-          email = '',
-          name = '',
-          user_id: userId = '',
-          picture = '',
-        } = jwtDecode(token)
+        const { user_id: userId = '' } = jwtDecode(token)
+        const user = (await getDoc(doc(db, 'users', userId))).data()
+        const { displayName, email, photoURL, role } = user
+
         setIsAuthenticated(true)
         setIsInitialized(true)
-
         setUser({
           id: userId,
-          name,
+          displayName,
           email,
-          avatar: picture,
-          role: 'Admin',
+          photoURL,
+          role,
         })
 
         clearTimeout(expiredTimer)

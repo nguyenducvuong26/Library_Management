@@ -73,7 +73,9 @@ const DROP_DOWN_ITEMS = [
 export default function Sidebar() {
   const navigate = useNavigate()
   const { logout, user } = useContext(AuthContext)
-  const { role } = user
+  const { role, photoURL, displayName } = user
+
+  console.log(user)
 
   const handleSelectDropdownItem = (e) => {
     if (e.key === 'logout') logout()
@@ -89,11 +91,13 @@ export default function Sidebar() {
       >
         <div className='flex p-4 justify-between items-center'>
           <div className='flex justify-between items-center'>
-            <Avatar size={42}>A</Avatar>
+            <Avatar alt={displayName} src={photoURL} size={42}>
+              A
+            </Avatar>
 
             <div className='ml-4'>
-              <h2 className='text-base font-semibold'>Test Name</h2>
-              <h3 className='text-gray-500'>Admin</h3>
+              <h2 className='text-base font-semibold'>{displayName}</h2>
+              <h3 className='text-gray-500'>{role}</h3>
             </div>
           </div>
 

@@ -11,16 +11,18 @@ AuthForm.propTypes = {
 }
 
 export default function AuthForm({ type }) {
-  const { login } = useContext(AuthContext)
+  const { login, register } = useContext(AuthContext)
   const [error, setError] = useState('')
   const isSignInTab = AUTH_FORM_TYPE.SIGN_IN === type
 
   const onFinish = async (values) => {
     try {
-      const { email, password } = values
+      const { name, email, password } = values
 
-      await login(email, password)
+      if (isSignInTab) await login(email, password)
+      else await register(name, email, password)
     } catch (error) {
+      console.log(error)
       setError(error.message || 'Something went wrong')
     }
   }

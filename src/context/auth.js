@@ -104,6 +104,7 @@ export default function AuthProvider({ children }) {
         }, timeLeft)
       } else {
         logout()
+        setIsInitialized(true)
       }
     }
 

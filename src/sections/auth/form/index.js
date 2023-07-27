@@ -22,7 +22,6 @@ export default function AuthForm({ type }) {
       if (isSignInTab) await login(email, password)
       else await register(name, email, password)
     } catch (error) {
-      console.log(error)
       setError(error.message || 'Something went wrong')
     }
   }
@@ -56,7 +55,7 @@ export default function AuthForm({ type }) {
               },
             ]}
           >
-            <Input styles={{ padding: '12px' }} />
+            <Input />
           </Form.Item>
         )}
 

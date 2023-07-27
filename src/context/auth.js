@@ -6,7 +6,7 @@ import {
   signOut,
   updateProfile,
 } from 'firebase/auth'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import jwtDecode from 'jwt-decode'
 import PropTypes from 'prop-types'
 
@@ -63,12 +63,12 @@ export default function AuthProvider({ children }) {
   }
 
   const logout = async () => {
-    console.log('Run')
     await signOut(auth)
 
     localStorage.removeItem('token')
     localStorage.removeItem('expireTime')
 
+    clearTimeout(expiredTimer)
     setIsAuthenticated(false)
     setUser(null)
   }
@@ -93,6 +93,8 @@ export default function AuthProvider({ children }) {
       email: userEmail,
       photoURL,
       role: 'Member',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     })
 
     localStorage.setItem('token', _tokenResponse.idToken)
@@ -104,7 +106,7 @@ export default function AuthProvider({ children }) {
       name: displayName,
       email: userEmail,
       avatar: photoURL,
-      role: 'Admin',
+      role: 'Member',
     })
   }
 
@@ -134,11 +136,9 @@ export default function AuthProvider({ children }) {
 
         clearTimeout(expiredTimer)
 
-        expiredTimer = setTimeout(() => {
-          logout()
-        }, timeLeft)
+        expiredTimer = setTimeout(logout, timeLeft)
       } else {
-        logout()
+        await logout()
         setIsInitialized(true)
       }
     }

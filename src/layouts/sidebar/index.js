@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import {
   AppstoreOutlined,
@@ -9,7 +9,7 @@ import {
   ShoppingCartOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import { Avatar, Dropdown, Menu } from 'antd'
+import { Avatar, Dropdown, Image, Menu } from 'antd'
 import { AuthContext } from 'context/auth'
 
 import { PAGES, ROLE_BY_PAGE } from 'config'
@@ -72,10 +72,10 @@ const DROP_DOWN_ITEMS = [
 
 export default function Sidebar() {
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const { logout, user } = useContext(AuthContext)
-  const { role, photoURL, displayName } = user
 
-  console.log(user)
+  const { role, photoURL, displayName } = user || {}
 
   const handleSelectDropdownItem = (e) => {
     if (e.key === 'logout') logout()
@@ -83,7 +83,9 @@ export default function Sidebar() {
 
   return (
     <div className='h-full'>
-      <div className='p-4'>Logo</div>
+      <div className='px-4'>
+        <Image preview={false} src='/assets/logo.svg' alt='Logo' />
+      </div>
 
       <Dropdown
         trigger='click'
@@ -91,13 +93,11 @@ export default function Sidebar() {
       >
         <div className='flex p-4 justify-between items-center'>
           <div className='flex justify-between items-center'>
-            <Avatar alt={displayName} src={photoURL} size={42}>
-              A
-            </Avatar>
+            <Avatar alt={displayName} src={photoURL} size={42} />
 
             <div className='ml-4'>
               <h2 className='text-base font-semibold'>{displayName}</h2>
-              <h3 className='text-gray-500'>{role}</h3>
+              <h3 className='text-gray-500 text-sm'>{role}</h3>
             </div>
           </div>
 
@@ -106,7 +106,6 @@ export default function Sidebar() {
           </div>
         </div>
       </Dropdown>
-
       <Menu
         onClick={(e) => navigate(PATH_DASHBOARD[e.key].root)}
         style={{
@@ -116,7 +115,9 @@ export default function Sidebar() {
           border: 'none',
         }}
         mode='inline'
-        items={NAV_ITEMS_BY_ROLE(role)}
+        defaultSelectedKeys={['dashboard']}
+        selectedKeys={[pathname.slice(1)]}
+        items={NAV_ITEMS_BY_ROLE(role).filter(Boolean)}
       />
     </div>
   )

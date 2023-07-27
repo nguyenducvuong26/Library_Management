@@ -2,23 +2,15 @@
 import { getApp, getApps, initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage'
 
-// import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: 'AIzaSyCy3DlecRc2J-D1JH_4vF-B1ssMgnulLg4',
-  authDomain: 'instagram-clone-12b86.firebaseapp.com',
-  databaseURL:
-    'https://instagram-clone-12b86-default-rtdb.asia-southeast1.firebasedatabase.app',
-  projectId: 'instagram-clone-12b86',
-  storageBucket: 'instagram-clone-12b86.appspot.com',
-  messagingSenderId: '588564230602',
-  appId: '1:588564230602:web:14bcb2503972a58ad51f33',
-  measurementId: 'G-1RDEJ11D4T',
+  apiKey: 'AIzaSyDq1Hms3EQ-rA7J4sV1d0TStZGJuS9fZhw',
+  authDomain: 'library-management-fad9d.firebaseapp.com',
+  projectId: 'library-management-fad9d',
+  storageBucket: 'library-management-fad9d.appspot.com',
+  messagingSenderId: '581825639918',
+  appId: '1:581825639918:web:f7e3f8a9120b098a22caff',
 }
 
 // Initialize Firebase
@@ -26,5 +18,5 @@ export const app = !getApps().length ? initializeApp(firebaseConfig) : getApp()
 
 export const auth = getAuth(app)
 export const db = getFirestore(app)
-
+export const storage = getStorage(app)
 // const analytics = getAnalytics(app);

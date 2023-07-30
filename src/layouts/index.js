@@ -15,7 +15,7 @@ export default function MainLayout() {
     <Layout>
       <Sider
         theme='light'
-        breakpoint='lg'
+        breakpoint='xl'
         collapsedWidth='0'
         collapsible
         collapsed={collapsed}

@@ -45,19 +45,33 @@ export default function BookItem({ book, handleEditBook }) {
         }}
         actions={[
           isMemberRole && (
-            <>
-              <Button type='primary' icon={<PlusCircleOutlined />}>
+            <div className='px-3 flex xs:flex-col justify-end flex-wrap items-center'>
+              <Button
+                type='primary'
+                icon={<PlusCircleOutlined />}
+                className='mt-2 mr-2 xs:w-full'
+              >
                 Add To Cart
               </Button>
-              <Button type='default'>Borrow</Button>
-            </>
+              <Button type='default' className='mt-2 mr-2 xs:w-full'>
+                Borrow
+              </Button>
+              <Button
+                type='primary'
+                className='mt-2 mr-2 xs:w-full'
+                onClick={handleEditBook(book)}
+              >
+                View Detail
+              </Button>
+            </div>
           ),
 
           isAdminRole && (
-            <div className='px-3   flex justify-end space-x-2'>
+            <div className='px-3 flex justify-end xs:flex-col'>
               <Button
                 type='primary'
                 icon={<EditOutlined />}
+                className='mt-2 mr-2 xs:w-full'
                 onClick={handleEditBook(book)}
               >
                 Edit
@@ -70,7 +84,11 @@ export default function BookItem({ book, handleEditBook }) {
                 cancelText='No'
                 onConfirm={handleDeleteBook}
               >
-                <Button danger icon={<DeleteOutlined />}>
+                <Button
+                  danger
+                  icon={<DeleteOutlined />}
+                  className='mt-2 mr-2 xs:w-full'
+                >
                   Delete
                 </Button>
               </Popconfirm>

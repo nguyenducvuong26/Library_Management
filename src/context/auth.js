@@ -10,7 +10,7 @@ import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import jwtDecode from 'jwt-decode'
 import PropTypes from 'prop-types'
 
-import { DEFAULT_PHOTO_URL } from 'config'
+import { DEFAULT_PHOTO_URL, ROLE } from 'config'
 
 import { auth, db } from 'utils/firebase'
 
@@ -94,7 +94,7 @@ export default function AuthProvider({ children }) {
       displayName: name,
       email: userEmail,
       photoURL: DEFAULT_PHOTO_URL,
-      role: 'Member',
+      role: ROLE.MEMBER,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     })
@@ -108,7 +108,7 @@ export default function AuthProvider({ children }) {
       displayName: name,
       email: userEmail,
       photoURL: DEFAULT_PHOTO_URL,
-      role: 'Member',
+      role: ROLE.MEMBER,
     })
   }
 

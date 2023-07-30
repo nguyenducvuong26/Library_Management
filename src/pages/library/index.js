@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { Button } from 'antd'
+import { PlusCircleOutlined, ShoppingOutlined } from '@ant-design/icons'
+import { Badge, Button } from 'antd'
+import useRole from 'hooks/useRole'
 
 import { HeaderBreadcrumb } from 'components/HeaderBreadcrumb'
 
@@ -10,6 +12,7 @@ import { PATH_DASHBOARD } from 'routes/paths'
 import { LibrarySection } from 'sections/library'
 
 export default function Library() {
+  const { isMemberRole = false, isAdminRole = false } = useRole()
   const [isOpen, setIsOpen] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
 
@@ -42,9 +45,30 @@ export default function Library() {
           },
         ]}
         actions={
-          <Button type='primary' onClick={handleAddNewBook}>
-            Add New Book
-          </Button>
+          <>
+            {isMemberRole && (
+              <Button
+                type='primary'
+                icon={
+                  <Badge count={2} size='small'>
+                    <ShoppingOutlined className='text-white' />
+                  </Badge>
+                }
+              >
+                Your Bag
+              </Button>
+            )}
+
+            {isAdminRole && (
+              <Button
+                type='primary'
+                icon={<PlusCircleOutlined />}
+                onClick={handleAddNewBook}
+              >
+                Add New Book
+              </Button>
+            )}
+          </>
         }
       />
 

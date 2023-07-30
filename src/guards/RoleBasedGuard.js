@@ -18,7 +18,7 @@ export default function RoleBasedGuard({
 }) {
   const { user } = useContext(AuthContext)
 
-  const { role } = user
+  const { role = '' } = user || {}
 
   const hasRole = [].concat(roles).includes(role)
 

@@ -82,17 +82,14 @@ export default function AuthProvider({ children }) {
       password
     )
     const { _tokenResponse, user = {} } = userCredential
-    const {
-      displayName = '',
-      email: userEmail = '',
-      photoURL = '',
-      uid = '',
-    } = user
+
+    const { email: userEmail = '', uid = '' } = user
 
     await updateProfile(auth.currentUser, {
       displayName: name,
       photoURL: DEFAULT_PHOTO_URL,
     })
+
     await setDoc(doc(db, 'users', uid), {
       displayName: name,
       email: userEmail,
@@ -108,9 +105,9 @@ export default function AuthProvider({ children }) {
     setIsAuthenticated(true)
     setUser({
       id: uid,
-      name: displayName,
+      displayName: name,
       email: userEmail,
-      avatar: photoURL,
+      photoURL: DEFAULT_PHOTO_URL,
       role: 'Member',
     })
   }
@@ -127,7 +124,7 @@ export default function AuthProvider({ children }) {
       if (token && !isExpired) {
         const { user_id: userId = '' } = jwtDecode(token)
         const user = (await getDoc(doc(db, 'users', userId))).data()
-        const { displayName, email, photoURL, role } = user
+        const { displayName, email, photoURL, role } = user || {}
 
         setIsAuthenticated(true)
         setIsInitialized(true)

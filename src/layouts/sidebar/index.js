@@ -95,9 +95,9 @@ export default function Sidebar() {
           <div className='flex justify-between items-center'>
             <Avatar alt={displayName} src={photoURL} size={42} />
 
-            <div className='ml-4'>
-              <h2 className='text-base font-semibold'>{displayName}</h2>
-              <h3 className='text-gray-500 text-sm'>{role}</h3>
+            <div className='ml-2'>
+              <h2 className='text-sm font-semibold mb-0'>{displayName}</h2>
+              <h3 className='text-gray-500 text-xs mb-0'>{role}</h3>
             </div>
           </div>
 

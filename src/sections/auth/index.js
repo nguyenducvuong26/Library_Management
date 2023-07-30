@@ -29,7 +29,7 @@ export default function AuthSection() {
       <div className='w-full flex flex-col items-center justify-center'>
         <Tabs
           className='w-full p-6 flex justify-center'
-          tabBarStyle={{ margin: '0 auto 24px' }}
+          tabBarStyle={{ margin: '0 auto 24px', padding: '0 4px' }}
           defaultActiveKey={AUTH_FORM_TYPE.SIGN_IN}
           size='large'
           items={AUTH_TABS}

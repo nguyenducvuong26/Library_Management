@@ -10,6 +10,8 @@ import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import jwtDecode from 'jwt-decode'
 import PropTypes from 'prop-types'
 
+import { DEFAULT_PHOTO_URL } from 'config'
+
 import { auth, db } from 'utils/firebase'
 
 export const AuthContext = createContext({
@@ -87,11 +89,14 @@ export default function AuthProvider({ children }) {
       uid = '',
     } = user
 
-    await updateProfile(auth.currentUser, { displayName: name })
+    await updateProfile(auth.currentUser, {
+      displayName: name,
+      photoURL: DEFAULT_PHOTO_URL,
+    })
     await setDoc(doc(db, 'users', uid), {
       displayName: name,
       email: userEmail,
-      photoURL,
+      photoURL: DEFAULT_PHOTO_URL,
       role: 'Member',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),

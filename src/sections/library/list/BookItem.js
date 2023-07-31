@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux'
+
 import {
   DeleteOutlined,
   EditOutlined,
@@ -9,6 +11,8 @@ import { deleteDoc, doc } from 'firebase/firestore'
 import useRole from 'hooks/useRole'
 import PropTypes from 'prop-types'
 
+import { addToBag } from 'sections/library/librarySlice'
+
 import { db } from 'utils/firebase'
 
 const { Meta } = Card
@@ -19,6 +23,7 @@ BookItem.propTypes = {
 }
 
 export default function BookItem({ book, handleEditBook }) {
+  const dispatch = useDispatch()
   const { isAdminRole, isMemberRole } = useRole()
 
   const { id, title, description, price, numberInStock, image } = book
@@ -31,11 +36,17 @@ export default function BookItem({ book, handleEditBook }) {
     }
   }
 
+  const handleAddToBag = (e) => {
+    e.stopPropagation()
+    dispatch(addToBag(book))
+  }
+
   return (
     <Col className='gutter-row' xs={24} sm={12} md={8} lg={6}>
       <Card
         hoverable
-        cover={<Image height={250} alt={title} src={image} />}
+        onClick={handleEditBook(book)}
+        cover={<Image preview={false} height={250} alt={title} src={image} />}
         className='h-full flex flex-col'
         bodyStyle={{
           flex: 1,
@@ -45,23 +56,15 @@ export default function BookItem({ book, handleEditBook }) {
         }}
         actions={[
           isMemberRole && (
-            <div className='px-3 flex xs:flex-col justify-end flex-wrap items-center'>
+            <div className='px-3'>
               <Button
                 type='primary'
                 icon={<PlusCircleOutlined />}
-                className='mt-2 mr-2 xs:w-full'
+                className='w-full'
+                onClick={handleAddToBag}
+                disabled={!Number(numberInStock)}
               >
-                Add To Cart
-              </Button>
-              <Button type='default' className='mt-2 mr-2 xs:w-full'>
-                Borrow
-              </Button>
-              <Button
-                type='primary'
-                className='mt-2 mr-2 xs:w-full'
-                onClick={handleEditBook(book)}
-              >
-                View Detail
+                Add To Bag
               </Button>
             </div>
           ),
@@ -71,7 +74,7 @@ export default function BookItem({ book, handleEditBook }) {
               <Button
                 type='primary'
                 icon={<EditOutlined />}
-                className='mt-2 mr-2 xs:w-full'
+                className='mt-2 mr-2 w-full'
                 onClick={handleEditBook(book)}
               >
                 Edit
@@ -87,7 +90,7 @@ export default function BookItem({ book, handleEditBook }) {
                 <Button
                   danger
                   icon={<DeleteOutlined />}
-                  className='mt-2 mr-2 xs:w-full'
+                  className='mt-2 mr-2 w-full'
                 >
                   Delete
                 </Button>
@@ -114,7 +117,7 @@ export default function BookItem({ book, handleEditBook }) {
             <p className='mb-0 font-semibold'>
               Number in stock: {numberInStock}
             </p>
-            <p className='mb-0 font-semibold'>Price: {price}$</p>
+            <p className='mb-0 font-semibold'>Price: ${price}</p>
           </div>
         </div>
       </Card>

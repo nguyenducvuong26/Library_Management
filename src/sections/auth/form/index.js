@@ -22,7 +22,7 @@ export default function AuthForm({ type }) {
       if (isSignInTab) await login(email, password)
       else await register(name, email, password)
     } catch (error) {
-      setError(error.message || 'Something went wrong')
+      setError(error.message || 'Something went wrong!')
     }
   }
 

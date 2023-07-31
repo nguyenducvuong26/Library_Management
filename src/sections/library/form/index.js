@@ -21,9 +21,11 @@ import {
   updateDoc,
 } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
+import useRole from 'hooks/useRole'
 import PropTypes from 'prop-types'
 
 import { db, storage } from 'utils/firebase'
+import { generateKeywords } from 'utils/generateKeywords'
 
 const { Dragger } = Upload
 const { Item, useForm } = Form
@@ -37,6 +39,7 @@ LibraryForm.propTypes = {
 
 export function LibraryForm({ open, selectedBook, onClose }) {
   const submitButtonRef = useRef()
+  const { isMemberRole = false, isAdminRole = false } = useRole()
   const [currentFile, setCurrentFile] = useState(null)
   const [progress, setProgress] = useState(null)
   const [form] = useForm()
@@ -47,6 +50,8 @@ export function LibraryForm({ open, selectedBook, onClose }) {
   const isEdit = !!id
 
   const onFinish = async (data) => {
+    const { title = '' } = data
+
     try {
       if (isEdit) {
         await updateDoc(doc(db, 'books', selectedBook.id), {
@@ -54,6 +59,7 @@ export function LibraryForm({ open, selectedBook, onClose }) {
           image: currentFile,
           createdAt,
           updatedAt: serverTimestamp(),
+          keywords: generateKeywords(title),
         })
       } else {
         await addDoc(collection(db, 'books'), {
@@ -61,6 +67,7 @@ export function LibraryForm({ open, selectedBook, onClose }) {
           image: currentFile,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
+          keywords: generateKeywords(title),
         })
       }
       onClose()
@@ -69,7 +76,6 @@ export function LibraryForm({ open, selectedBook, onClose }) {
     }
   }
 
-  // eslint-disable-next-line consistent-return
   const normFile = (e) => {
     if (!e?.fileList || !e?.fileList?.length) {
       setCurrentFile(null)
@@ -122,25 +128,34 @@ export function LibraryForm({ open, selectedBook, onClose }) {
 
   return (
     <Drawer
-      title={isEdit ? 'Edit Book' : 'Add New Book'}
+      title={`${isAdminRole ? `${isEdit ? 'Edit' : 'Add'}` : 'Detail'} Book`}
       open={open}
       onClose={onClose}
+      closeIcon={false}
       size='large'
       extra={
         <Space>
-          <Button
-            disabled={!!progress}
-            type='primary'
-            htmlType='submit'
-            onClick={() => submitButtonRef.current.click()}
-          >
-            {isEdit ? 'Edit' : 'Add'}
-          </Button>
+          {isAdminRole && (
+            <Button
+              disabled={!!progress}
+              type='primary'
+              htmlType='submit'
+              onClick={() => submitButtonRef.current.click()}
+            >
+              {isEdit ? 'Edit' : 'Add'}
+            </Button>
+          )}
           <Button onClick={onClose}>Cancel</Button>
         </Space>
       }
     >
-      <Form layout='vertical' size='large' form={form} onFinish={onFinish}>
+      <Form
+        layout='vertical'
+        size='large'
+        form={form}
+        disabled={isMemberRole}
+        onFinish={onFinish}
+      >
         <Item
           label='Title'
           name='title'
@@ -177,9 +192,19 @@ export function LibraryForm({ open, selectedBook, onClose }) {
               required: true,
               message: 'Number in stock is required',
             },
+            {
+              pattern: '^[0-9]*$',
+              message: 'Number in stock must be an integer',
+            },
           ]}
         >
-          <InputNumber className='w-full' size='large' min='0' stringMode />
+          <InputNumber
+            className='w-full'
+            size='large'
+            min='0'
+            step={1}
+            stringMode
+          />
         </Item>
 
         <Item

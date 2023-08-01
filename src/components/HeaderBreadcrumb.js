@@ -1,4 +1,5 @@
 import { Breadcrumb } from 'antd'
+import useRole from 'hooks/useRole'
 import PropTypes from 'prop-types'
 
 HeaderBreadcrumb.propTypes = {
@@ -9,11 +10,15 @@ HeaderBreadcrumb.propTypes = {
 }
 
 export function HeaderBreadcrumb({ className, heading, items, actions }) {
+  const { isAdminRole = false } = useRole()
+
   return (
     <div className={className}>
-      <h3 className='text-2xl'>{heading}</h3>
-      <div className='flex justify-between'>
-        <Breadcrumb className='text-lg' items={items} />
+      <div className='flex justify-between items-end'>
+        <div>
+          <h3 className='text-2xl'>{heading}</h3>
+          {isAdminRole && <Breadcrumb className='text-lg' items={items} />}
+        </div>
         {actions}
       </div>
     </div>

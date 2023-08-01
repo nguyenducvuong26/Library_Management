@@ -9,31 +9,36 @@ import PropTypes from 'prop-types'
 
 import { db } from 'utils/firebase'
 
+import { LibraryBag } from './bag'
 import { LibraryForm } from './form'
 import LibraryList from './list'
 
 LibrarySection.propTypes = {
-  isOpen: PropTypes.bool,
+  isOpenForm: PropTypes.bool,
+  isOpenBag: PropTypes.bool,
   selectedBook: PropTypes.object,
   handleEditBook: PropTypes.func,
   handleCloseForm: PropTypes.func,
+  handleCloseBag: PropTypes.func,
 }
 
 export function LibrarySection({
-  isOpen,
+  isOpenForm,
+  isOpenBag,
   selectedBook,
   handleEditBook,
   handleCloseForm,
+  handleCloseBag,
 }) {
   const [search, setSearch] = useState('')
-  const searchValue = useDebounce(search, 300)
+  const searchValue = useDebounce(search, 500)
 
   const q = useMemo(
     () =>
       searchValue
         ? query(
             collection(db, 'books'),
-            where('title', '==', searchValue),
+            where('keywords', 'array-contains', searchValue),
             orderBy('updatedAt', 'desc')
           )
         : query(collection(db, 'books'), orderBy('updatedAt', 'desc')),
@@ -56,13 +61,15 @@ export function LibrarySection({
 
       <LibraryList books={books} handleEditBook={handleEditBook} />
 
-      {isOpen && (
+      {isOpenForm && (
         <LibraryForm
           open
           selectedBook={selectedBook}
           onClose={handleCloseForm}
         />
       )}
+
+      {isOpenBag && <LibraryBag open onClose={handleCloseBag} />}
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { PlusCircleOutlined, ShoppingOutlined } from '@ant-design/icons'
@@ -10,24 +11,36 @@ import { HeaderBreadcrumb } from 'components/HeaderBreadcrumb'
 import { PATH_DASHBOARD } from 'routes/paths'
 
 import { LibrarySection } from 'sections/library'
+import { selectLibraryBag } from 'sections/library/librarySlice'
 
 export default function Library() {
   const { isMemberRole = false, isAdminRole = false } = useRole()
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpenForm, setIsOpenForm] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
+  const [isOpenBag, setIsOpenBag] = useState(false)
+
+  const { totalItems = 0 } = useSelector((state) => selectLibraryBag(state))
 
   const handleAddNewBook = () => {
-    setIsOpen(true)
+    setIsOpenForm(true)
   }
 
   const handleEditBook = (book) => () => {
-    setIsOpen(true)
+    setIsOpenForm(true)
     setSelectedBook(book)
   }
 
   const handleCloseForm = () => {
-    setIsOpen(false)
+    setIsOpenForm(false)
     setSelectedBook(null)
+  }
+
+  const handleOpenBag = () => {
+    setIsOpenBag(true)
+  }
+
+  const handleCloseBag = () => {
+    setIsOpenBag(false)
   }
 
   return (
@@ -50,10 +63,11 @@ export default function Library() {
               <Button
                 type='primary'
                 icon={
-                  <Badge count={2} size='small'>
+                  <Badge count={totalItems} size='small'>
                     <ShoppingOutlined className='text-white' />
                   </Badge>
                 }
+                onClick={handleOpenBag}
               >
                 Your Bag
               </Button>
@@ -73,10 +87,12 @@ export default function Library() {
       />
 
       <LibrarySection
-        isOpen={isOpen}
+        isOpenForm={isOpenForm}
+        isOpenBag={isOpenBag}
         selectedBook={selectedBook}
         handleEditBook={handleEditBook}
         handleCloseForm={handleCloseForm}
+        handleCloseBag={handleCloseBag}
       />
     </div>
   )

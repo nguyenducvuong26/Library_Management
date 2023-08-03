@@ -16,7 +16,7 @@ import {
 } from 'antd'
 import clsx from 'clsx'
 import { AuthContext } from 'context/auth'
-import { addDoc, collection } from 'firebase/firestore'
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore'
 import PropTypes from 'prop-types'
 
 import {
@@ -33,10 +33,11 @@ import { BAG_TYPE, GET_LIST_COLUMN } from './config'
 
 LibraryBag.propTypes = {
   open: PropTypes.bool,
+  books: PropTypes.array,
   onClose: PropTypes.func,
 }
 
-export function LibraryBag({ open, onClose }) {
+export function LibraryBag({ open = false, books = {}, onClose }) {
   const dispatch = useDispatch()
   const [type, setType] = useState(BAG_TYPE.BUY)
   const [isCheckout, setIsCheckout] = useState(false)
@@ -50,7 +51,7 @@ export function LibraryBag({ open, onClose }) {
   useEffect(() => {
     if (!user) return
 
-    const { displayName, email, phone, address } = user
+    const { displayName = '', email = '', phone = '', address = '' } = user
 
     setFieldValue('name', displayName)
     setFieldValue('email', email)
@@ -106,6 +107,20 @@ export function LibraryBag({ open, onClose }) {
         await addDoc(collection(db, 'loans'), borrowData)
         message.success('Request borrow success!')
       }
+
+      const booksFormat = books.reduce(
+        (acc, cur) => ({
+          ...acc,
+          [cur.id]: { ...cur },
+        }),
+        {}
+      )
+
+      items.forEach(async ({ id, quantity }) => {
+        await updateDoc(doc(db, 'books', id), {
+          numberInStock: booksFormat[id].numberInStock - quantity,
+        })
+      })
 
       dispatch(resetBag())
       onClose()

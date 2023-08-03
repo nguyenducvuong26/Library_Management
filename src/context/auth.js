@@ -49,7 +49,11 @@ export default function AuthProvider({ children }) {
       uid = '',
     } = user
 
-    const currentUser = (await getDoc(doc(db, 'users', uid))).data()
+    const {
+      role = '',
+      phone = '',
+      address = '',
+    } = (await getDoc(doc(db, 'users', uid))).data() || {}
 
     localStorage.setItem('token', _tokenResponse.idToken)
     localStorage.setItem('expireTime', new Date().getTime() + 3.6 * 10 ** 6)
@@ -60,7 +64,9 @@ export default function AuthProvider({ children }) {
       displayName,
       email: userEmail,
       photoURL,
-      role: currentUser.role,
+      role,
+      phone,
+      address,
     })
   }
 
@@ -95,6 +101,8 @@ export default function AuthProvider({ children }) {
       email: userEmail,
       photoURL: DEFAULT_PHOTO_URL,
       role: ROLE.MEMBER,
+      phone: null,
+      address: null,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     })
@@ -108,6 +116,8 @@ export default function AuthProvider({ children }) {
       displayName: name,
       email: userEmail,
       photoURL: DEFAULT_PHOTO_URL,
+      phone: null,
+      address: null,
       role: ROLE.MEMBER,
     })
   }
@@ -124,7 +134,14 @@ export default function AuthProvider({ children }) {
       if (token && !isExpired) {
         const { user_id: userId = '' } = jwtDecode(token)
         const user = (await getDoc(doc(db, 'users', userId))).data()
-        const { displayName, email, photoURL, role } = user || {}
+        const {
+          displayName = '',
+          email = '',
+          photoURL = '',
+          role = '',
+          phone = '',
+          address = '',
+        } = user || {}
 
         setIsAuthenticated(true)
         setIsInitialized(true)
@@ -134,6 +151,8 @@ export default function AuthProvider({ children }) {
           email,
           photoURL,
           role,
+          phone,
+          address,
         })
 
         clearTimeout(expiredTimer)

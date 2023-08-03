@@ -16,7 +16,13 @@ import {
 } from 'antd'
 import clsx from 'clsx'
 import { AuthContext } from 'context/auth'
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from 'firebase/firestore'
 import PropTypes from 'prop-types'
 
 import {
@@ -93,6 +99,9 @@ export function LibraryBag({ open = false, books = {}, onClose }) {
           totalPayment,
           recipientInfor: data,
           userId: user.id,
+          status: 'Pending',
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
         }
 
         await addDoc(collection(db, 'orders'), orderData)
@@ -102,6 +111,8 @@ export function LibraryBag({ open = false, books = {}, onClose }) {
           items,
           dueDate: data.dueDate.format('YYYY-MM-DD'),
           userId: user.id,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
         }
 
         await addDoc(collection(db, 'loans'), borrowData)
@@ -119,6 +130,7 @@ export function LibraryBag({ open = false, books = {}, onClose }) {
       items.forEach(async ({ id, quantity }) => {
         await updateDoc(doc(db, 'books', id), {
           numberInStock: booksFormat[id].numberInStock - quantity,
+          updatedAt: serverTimestamp(),
         })
       })
 
@@ -152,14 +164,13 @@ export function LibraryBag({ open = false, books = {}, onClose }) {
             type,
           }).filter(Boolean)}
           dataSource={items.map((item) => ({ ...item, key: item.id }))}
-          p-4
         />
       ) : (
         <Empty />
       )}
 
       <Space
-        className={clsx('mt-6 flex flex-row  p-3', {
+        className={clsx('mt-6 flex flex-row p-3', {
           'justify-between': type === BAG_TYPE.BUY,
           'justify-end': type === BAG_TYPE.BORROW,
         })}

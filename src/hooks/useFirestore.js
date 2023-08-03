@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { onSnapshot } from 'firebase/firestore'
 
-const useFirestore = (collectionName, query) => {
+const useFirestore = (query) => {
   const [documents, setDocuments] = useState([])
 
   useEffect(() => {
-    if (!collectionName || !query) return null
+    if (!query) return null
 
     // Listen to collection to get realtime updates
     const unsubscribe = onSnapshot(query, (querySnapshot) => {
@@ -20,7 +20,7 @@ const useFirestore = (collectionName, query) => {
     return () => {
       unsubscribe()
     }
-  }, [collectionName, query])
+  }, [query])
   return documents
 }
 

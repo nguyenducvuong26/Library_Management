@@ -45,7 +45,7 @@ export function LibrarySection({
     [searchValue]
   )
 
-  const books = useFirestore('books', q)
+  const books = useFirestore(q)
 
   return (
     <div className='pt-6'>

@@ -69,7 +69,7 @@ export function LibrarySection({
         />
       )}
 
-      {isOpenBag && <LibraryBag open onClose={handleCloseBag} />}
+      {isOpenBag && <LibraryBag open books={books} onClose={handleCloseBag} />}
     </div>
   )
 }

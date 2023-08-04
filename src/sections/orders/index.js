@@ -50,7 +50,6 @@ export function OrdersSection() {
         `Successfully changed order status #${option.orderId} into ${value}`
       )
     } catch (error) {
-      console.log(error)
       message.error(error?.message || 'Something went wrong!')
     }
   }

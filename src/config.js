@@ -5,6 +5,7 @@ export const ROLE = {
 
 export const PAGES = {
   Dashboard: 'Dashboard',
+  Profile: 'Profile',
   Library: 'Library',
   Loans: 'Loans',
   Members: 'Members',
@@ -13,7 +14,7 @@ export const PAGES = {
 
 export const PAGE_PERMISSION = [
   {
-    pageNames: [PAGES.Library, PAGES.Loans, PAGES.Orders],
+    pageNames: [PAGES.Library, PAGES.Loans, PAGES.Orders, PAGES.Profile],
     roles: [ROLE.ADMIN, ROLE.MEMBER],
   },
   {

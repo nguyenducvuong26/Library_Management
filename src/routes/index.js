@@ -30,6 +30,25 @@ export default function Router() {
         </AuthGuard>
       ),
     },
+    // Profile Routes
+    {
+      path: 'profile/:userId',
+      element: (
+        <AuthGuard>
+          <MainLayout />
+        </AuthGuard>
+      ),
+      children: [
+        {
+          index: true,
+          element: (
+            <RoleBasedGuard roles={ROLE_BY_PAGE[PAGES.Profile]} hasContent>
+              <ProfilePage />
+            </RoleBasedGuard>
+          ),
+        },
+      ],
+    },
     // Dashboard Routes
     {
       path: 'dashboard',
@@ -161,3 +180,4 @@ const LibraryPage = Loadable(lazy(() => import('pages/library')))
 const LoansPage = Loadable(lazy(() => import('pages/loans')))
 const MembersPage = Loadable(lazy(() => import('pages/members')))
 const OrdersPage = Loadable(lazy(() => import('pages/orders')))
+const ProfilePage = Loadable(lazy(() => import('pages/profile')))

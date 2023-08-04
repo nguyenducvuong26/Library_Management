@@ -5,3 +5,8 @@
   height: 28px;
   inset-inline-end: -28px;
 }
+
+.custom-upload-size .ant-upload.ant-upload-select {
+  width: 144px !important;
+  height: 144px !important;
+}

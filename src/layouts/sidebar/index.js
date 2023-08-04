@@ -1,84 +1,36 @@
 import { useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import {
-  AppstoreOutlined,
-  BankOutlined,
-  CalendarOutlined,
-  DownOutlined,
-  ShoppingCartOutlined,
-  UserOutlined,
-} from '@ant-design/icons'
+import { DownOutlined } from '@ant-design/icons'
 import { Avatar, Dropdown, Image, Menu } from 'antd'
 import { AuthContext } from 'context/auth'
 
-import { PAGES, ROLE_BY_PAGE } from 'config'
-
 import { PATH_DASHBOARD } from 'routes/paths'
 
-function getItem(label, key, icon) {
-  return {
-    key,
-    icon,
-    label,
-  }
-}
-
-const NAV_ITEMS_CONFIG = [
-  {
-    label: 'Dashboard',
-    key: 'dashboard',
-    icon: <AppstoreOutlined />,
-    roles: ROLE_BY_PAGE[PAGES.Dashboard],
-  },
-  {
-    label: 'Library',
-    key: 'library',
-    icon: <BankOutlined />,
-    roles: ROLE_BY_PAGE[PAGES.Library],
-  },
-  {
-    label: 'Loans',
-    key: 'loans',
-    icon: <CalendarOutlined />,
-    roles: ROLE_BY_PAGE[PAGES.Loans],
-  },
-  {
-    label: 'Orders',
-    key: 'orders',
-    icon: <ShoppingCartOutlined />,
-    roles: ROLE_BY_PAGE[PAGES.Orders],
-  },
-  {
-    label: 'Members',
-    key: 'members',
-    icon: <UserOutlined />,
-    roles: ROLE_BY_PAGE[PAGES.Members],
-  },
-]
-
-const NAV_ITEMS_BY_ROLE = (role) =>
-  NAV_ITEMS_CONFIG.map(
-    ({ label, key, icon, roles }) =>
-      roles.includes(role) && getItem(label, key, icon)
-  )
-
-const DROP_DOWN_ITEMS = [
-  {
-    key: 'logout',
-    label: 'Log out',
-  },
-]
+import { DROP_DOWN_ITEMS, NAV_ITEMS_BY_ROLE } from './config'
 
 export default function Sidebar() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { logout, user } = useContext(AuthContext)
 
-  const { role, photoURL, displayName } = user || {}
+  const { id = '', role = '', photoURL = '', displayName = '' } = user || {}
 
   const handleSelectDropdownItem = (e) => {
-    if (e.key === 'logout') logout()
+    const { key = '' } = e || {}
+
+    switch (key) {
+      case 'profile': {
+        navigate(PATH_DASHBOARD.profile.view(id))
+        break
+      }
+      case 'logout': {
+        logout()
+        break
+      }
+      default:
+        break
+    }
   }
 
   return (

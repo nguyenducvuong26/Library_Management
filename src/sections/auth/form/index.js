@@ -35,7 +35,7 @@ export default function AuthForm({ type }) {
           width: 450,
           margin: 'auto',
         }}
-        className='xs:w-full '
+        className='xs:w-full'
         onFinish={onFinish}
       >
         {error && (
@@ -84,6 +84,10 @@ export default function AuthForm({ type }) {
               required: true,
               message: 'Password is required',
             },
+            isSignInTab && {
+              min: 8,
+              message: 'Password must be at least 8 characters',
+            },
           ]}
         >
           <Input.Password />
@@ -106,7 +110,7 @@ export default function AuthForm({ type }) {
                     return Promise.resolve()
                   }
                   return Promise.reject(
-                    new Error('The new password that you entered do not match!')
+                    new Error('The new password that you entered do not match')
                   )
                 },
               }),

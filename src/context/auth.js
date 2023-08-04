@@ -4,9 +4,16 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  updateEmail,
   updateProfile,
 } from 'firebase/auth'
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
+import {
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore'
 import jwtDecode from 'jwt-decode'
 import PropTypes from 'prop-types'
 
@@ -33,6 +40,28 @@ export default function AuthProvider({ children }) {
   const [isInitialized, setIsInitialized] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [user, setUser] = useState(null)
+
+  const updateUser = async (data) => {
+    const { photoURL, email, displayName, phone, address, userId } = data || {}
+
+    await updateProfile(auth.currentUser, {
+      ...(photoURL && { photoURL }),
+      ...(displayName && { displayName }),
+    })
+
+    await updateEmail(auth.currentUser, email)
+
+    await updateDoc(doc(db, 'users', userId), {
+      updatedAt: serverTimestamp(),
+      ...(photoURL && { photoURL }),
+      ...(email && { email }),
+      ...(displayName && { displayName }),
+      ...(phone && { phone }),
+      ...(address && { address }),
+    })
+
+    setUser((prev) => ({ ...prev, ...data }))
+  }
 
   const login = async (email, password) => {
     const userCredential = await signInWithEmailAndPassword(
@@ -169,7 +198,15 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ login, logout, register, isInitialized, isAuthenticated, user }}
+      value={{
+        login,
+        logout,
+        register,
+        updateUser,
+        isInitialized,
+        isAuthenticated,
+        user,
+      }}
     >
       {children}
     </AuthContext.Provider>

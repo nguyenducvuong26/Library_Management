@@ -2,26 +2,30 @@ function path(root, sublink) {
   return `${root}${sublink}`
 }
 
-export const ROOTS_DASHBOARD = '/'
+export const ROOT_DASHBOARD = '/'
 
 export const PATH_DASHBOARD = {
-  root: ROOTS_DASHBOARD,
+  root: ROOT_DASHBOARD,
   auth: {
-    root: path(ROOTS_DASHBOARD, 'auth'),
+    root: path(ROOT_DASHBOARD, 'auth'),
+  },
+  profile: {
+    root: path(ROOT_DASHBOARD, 'profile'),
+    view: (id) => `${path(ROOT_DASHBOARD, 'profile')}/${id}`,
   },
   dashboard: {
-    root: path(ROOTS_DASHBOARD, 'dashboard'),
+    root: path(ROOT_DASHBOARD, 'dashboard'),
   },
   library: {
-    root: path(ROOTS_DASHBOARD, 'library'),
+    root: path(ROOT_DASHBOARD, 'library'),
   },
   loans: {
-    root: path(ROOTS_DASHBOARD, 'loans'),
+    root: path(ROOT_DASHBOARD, 'loans'),
   },
   members: {
-    root: path(ROOTS_DASHBOARD, 'members'),
+    root: path(ROOT_DASHBOARD, 'members'),
   },
   orders: {
-    root: path(ROOTS_DASHBOARD, 'orders'),
+    root: path(ROOT_DASHBOARD, 'orders'),
   },
 }

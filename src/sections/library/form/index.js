@@ -96,14 +96,12 @@ export function LibraryForm({ open, selectedBook, onClose }) {
       (snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         setProgress(Math.ceil(progress))
-        console.log(`Upload is ${progress}% done`)
       },
       (error) => {
         message.error(error?.message || 'Some thing went wrong!')
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log('File available at', downloadURL)
           setProgress(null)
           setCurrentFile(downloadURL)
         })

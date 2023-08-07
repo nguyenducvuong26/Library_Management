@@ -5,13 +5,14 @@ import { GET_LIST_COLUMN } from './config'
 
 MemberTableList.propTypes = {
   users: PropTypes.array,
+  handleProfileClick: PropTypes.func,
 }
 
-export default function MemberTableList({ users }) {
+export default function MemberTableList({ users, handleProfileClick }) {
   return (
     <Table
       pagination={false}
-      columns={GET_LIST_COLUMN()}
+      columns={GET_LIST_COLUMN({ handleProfileClick })}
       dataSource={users.map((user) => ({
         ...user,
         key: user.id,

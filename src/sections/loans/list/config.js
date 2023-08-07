@@ -1,19 +1,25 @@
-import { Select, Tag } from 'antd'
+import { Button, Select, Tag } from 'antd'
 import { format } from 'date-fns'
 
 export const STATUS_TAG_COLOR = {
-  Borrowing: 'blue',
-  Done: 'green',
+  Borrowed: 'blue',
+  Pending: 'yellow',
   Expired: 'red',
+  Cancel: 'green',
 }
 
 export const STATUS_OPTIONS = (loanId) => [
-  { loanId, value: 'Done', label: 'Done' },
+  { loanId, value: 'Pending', label: 'Pending' },
   { loanId, value: 'Expired', label: 'Expired' },
-  { loanId, value: 'Borrowing', label: 'Borrowing' },
+  { loanId, value: 'Borrowed', label: 'Borrowed' },
+  { loanId, value: 'Cancel', label: 'Cancel' },
 ]
 
-export const GET_LIST_COLUMN = ({ isAdminRole, handleChangeLoanStatus }) => [
+export const GET_LIST_COLUMN = ({
+  isAdminRole,
+  handleChangeLoanStatus,
+  handleOpenLoanDetail,
+}) => [
   {
     title: 'Borrow Id',
     dataIndex: 'id',
@@ -34,14 +40,21 @@ export const GET_LIST_COLUMN = ({ isAdminRole, handleChangeLoanStatus }) => [
     title: 'Due date',
     dataIndex: 'dueDate',
     key: 'dueDate',
-    render: (dueDate) => format(new Date(dueDate), 'dd/MM/yy'),
+    render: (dueDate) => format(new Date(dueDate), 'dd/MM/yyyy'),
   },
   {
     title: 'Status',
     dataIndex: 'status',
     key: 'status',
-    render: (_, { id = '', status = '' }) =>
-      isAdminRole ? (
+    render: (_, { id = '', status = '', dueDate }) => {
+      const currentDate = new Date()
+      const expiredDate = new Date(dueDate)
+
+      if (status === 'Pending' && currentDate >= expiredDate) {
+        handleChangeLoanStatus('Expired', { loanId: id })
+      }
+
+      return isAdminRole ? (
         <Select
           defaultValue={status}
           style={{ width: 100 }}
@@ -50,6 +63,17 @@ export const GET_LIST_COLUMN = ({ isAdminRole, handleChangeLoanStatus }) => [
         />
       ) : (
         <Tag color={STATUS_TAG_COLOR[status]}>{status}</Tag>
-      ),
+      )
+    },
+  },
+  {
+    title: 'Action',
+    dataIndex: 'action',
+    key: 'action',
+    render: (_, record) => (
+      <Button type='primary' onClick={handleOpenLoanDetail(record)}>
+        Detail
+      </Button>
+    ),
   },
 ]

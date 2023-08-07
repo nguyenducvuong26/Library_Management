@@ -112,6 +112,7 @@ export function LibraryBag({ open = false, books = {}, onClose }) {
           items,
           dueDate: data.dueDate.format('YYYY-MM-DD'),
           userId: user.id,
+          status: 'Pending',
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         }

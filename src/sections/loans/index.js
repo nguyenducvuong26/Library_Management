@@ -1,5 +1,4 @@
-// import { useMemo } from 'react'
-import { useContext, useMemo } from 'react'
+import { useContext, useMemo, useState } from 'react'
 
 import { message } from 'antd'
 import { AuthContext } from 'context/auth'
@@ -17,6 +16,7 @@ import useRole from 'hooks/useRole'
 
 import { db } from 'utils/firebase'
 
+import DetailLoan from './detail'
 import LoanTableList from './list'
 
 LoansSection.propTypes = {}
@@ -25,6 +25,19 @@ export function LoansSection() {
   const { user = {} } = useContext(AuthContext)
   const { isAdminRole } = useRole()
   const { id: userId } = user || {}
+
+  const [isOpen, setIsOpen] = useState(false)
+  const [loan, setLoan] = useState(null)
+
+  const handleOpenLoanDetail = (loan) => () => {
+    setIsOpen(true)
+    setLoan(loan)
+  }
+
+  const handleCloseLoanDetail = () => {
+    setIsOpen(false)
+    setLoan(null)
+  }
 
   const handleChangeLoanStatus = async (value, option) => {
     try {
@@ -58,8 +71,12 @@ export function LoansSection() {
     <div className='pt-6'>
       <LoanTableList
         loans={loans}
-        handleChangeOrderStatus={handleChangeLoanStatus}
+        handleChangeLoanStatus={handleChangeLoanStatus}
+        handleOpenLoanDetail={handleOpenLoanDetail}
       />
+      {isOpen && (
+        <DetailLoan open loan={loan} onClose={handleCloseLoanDetail} />
+      )}
     </div>
   )
 }

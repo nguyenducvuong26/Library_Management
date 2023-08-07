@@ -7,9 +7,14 @@ import { GET_LIST_COLUMN } from './config'
 LoanTableList.propTypes = {
   loans: PropTypes.array,
   handleChangeLoanStatus: PropTypes.func,
+  handleOpenLoanDetail: PropTypes.func,
 }
 
-export default function LoanTableList({ loans, handleChangeLoanStatus }) {
+export default function LoanTableList({
+  loans,
+  handleChangeLoanStatus,
+  handleOpenLoanDetail,
+}) {
   const { isAdminRole = false } = useRole()
 
   return (
@@ -18,12 +23,13 @@ export default function LoanTableList({ loans, handleChangeLoanStatus }) {
       columns={GET_LIST_COLUMN({
         isAdminRole,
         handleChangeLoanStatus,
+        handleOpenLoanDetail,
       })}
       dataSource={loans.map((loan) => ({
         ...loan,
         key: loan.id,
         createdAt: new Date(loan.createdAt.seconds * 1000).toLocaleString(),
-        title: loan.items[0]?.title,
+        title: loan.items.map((item) => item.title).join(', '),
       }))}
     />
   )

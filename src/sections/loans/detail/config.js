@@ -24,10 +24,4 @@ export const GET_LIST_COLUMN = () => [
     key: 'quantity',
     render: (_, record) => <strong>{record.quantity}</strong>,
   },
-  {
-    title: 'Price per item',
-    dataIndex: 'price',
-    key: 'price',
-    render: (_, { price }) => <strong>${price}</strong>,
-  },
 ]

@@ -91,6 +91,7 @@ export default function BookItem({ book, handleEditBook }) {
                   danger
                   icon={<DeleteOutlined />}
                   className='mt-2 mr-2 w-full'
+                  onClick={(e) => e.stopPropagation()}
                 >
                   Delete
                 </Button>

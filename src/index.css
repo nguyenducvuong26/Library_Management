@@ -10,3 +10,7 @@
   width: 144px !important;
   height: 144px !important;
 }
+
+.ant-table-wrapper {
+  overflow: auto !important;
+}

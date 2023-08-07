@@ -97,6 +97,7 @@ export function LibraryBag({ open = false, books = {}, onClose }) {
         const orderData = {
           items,
           totalPayment,
+          totalItems,
           recipientInfor: data,
           userId: user.id,
           status: 'Pending',

@@ -4,6 +4,8 @@ import { HeaderBreadcrumb } from 'components/HeaderBreadcrumb'
 
 import { PATH_DASHBOARD } from 'routes/paths'
 
+import { MembersSection } from 'sections/members'
+
 export default function Members() {
   return (
     <div className='px-10 py-8'>
@@ -20,6 +22,7 @@ export default function Members() {
           },
         ]}
       />
+      <MembersSection />
     </div>
   )
 }

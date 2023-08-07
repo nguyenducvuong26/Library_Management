@@ -25,7 +25,6 @@ import { AuthContext } from 'context/auth'
 import { deleteUser } from 'firebase/auth'
 import { deleteDoc, doc, getDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
-import useRole from 'hooks/useRole'
 
 import { PATH_DASHBOARD } from 'routes/paths'
 
@@ -35,7 +34,6 @@ const { Item, useForm } = Form
 
 export default function General() {
   const navigate = useNavigate()
-  const { isAdminRole = false } = useRole()
   const { user = {}, updateUser, logout } = useContext(AuthContext)
   const { userId = '' } = useParams()
   const [isEdit, setIsEdit] = useState(false)
@@ -163,7 +161,7 @@ export default function General() {
             </Card>
           </Col>
 
-          {(isAdminRole || canEdit) && (
+          {canEdit && (
             <Col span={24}>
               <Alert
                 className='flex-col space-y-4'

@@ -7,9 +7,12 @@ import {
 
 import { auth } from 'utils/firebase'
 
-const { Item } = Form
+const { Item, useForm } = Form
 
 export default function ChangePassword() {
+  const [form] = useForm()
+  const { resetFields } = form
+
   const onFinish = async (data) => {
     try {
       const { oldPassword, newPassword } = data || {}
@@ -24,6 +27,7 @@ export default function ChangePassword() {
 
       await updatePassword(currentUser, newPassword)
 
+      resetFields()
       message.success('Update password success!')
     } catch (error) {
       console.log(error)
@@ -33,7 +37,7 @@ export default function ChangePassword() {
 
   return (
     <Card>
-      <Form layout='vertical' size='large' onFinish={onFinish}>
+      <Form layout='vertical' size='large' form={form} onFinish={onFinish}>
         <Item
           label='Old password'
           name='oldPassword'

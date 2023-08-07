@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom'
 
 import { SearchOutlined } from '@ant-design/icons'
 import { Input } from 'antd'
-import { collection, orderBy, query } from 'firebase/firestore'
+import { collection, orderBy, query, where } from 'firebase/firestore'
 import { useDebounce } from 'hooks/useDebounce'
 import useFirestore from 'hooks/useFirestore'
-import useRole from 'hooks/useRole'
 
 import { PATH_DASHBOARD } from 'routes/paths'
 
@@ -17,13 +16,15 @@ import MemberTableList from './list'
 MembersSection.propTypes = {}
 
 export function MembersSection() {
-  const { isAdminRole } = useRole()
-
-  const q = useMemo(() => {
-    if (isAdminRole)
-      return query(collection(db, 'users'), orderBy('createdAt', 'desc'))
-    return null
-  }, [isAdminRole])
+  const q = useMemo(
+    () =>
+      query(
+        collection(db, 'users'),
+        where('role', '==', 'Member'),
+        orderBy('createdAt', 'desc')
+      ),
+    []
+  )
   const users = useFirestore(q)
 
   const [search, setSearch] = useState('')

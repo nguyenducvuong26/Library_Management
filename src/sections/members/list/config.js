@@ -9,13 +9,18 @@ export const GET_LIST_COLUMN = ({ handleProfileClick }) => [
     key: 'displayName',
     render: (_, { id, displayName }) => (
       <Link
-        className='text-black font-bold'
+        className='text-black font-semibold hover:text-blue-500'
         onClick={() => handleProfileClick(id)}
         to={PATH_DASHBOARD.profile.view(id)}
       >
         {displayName}
       </Link>
     ),
+  },
+  {
+    title: 'Email',
+    dataIndex: 'email',
+    key: 'email',
   },
   {
     title: 'Phone number',
@@ -26,10 +31,5 @@ export const GET_LIST_COLUMN = ({ handleProfileClick }) => [
     title: 'Address',
     dataIndex: 'address',
     key: 'address',
-  },
-  {
-    title: 'Email',
-    dataIndex: 'email',
-    key: 'email',
   },
 ]

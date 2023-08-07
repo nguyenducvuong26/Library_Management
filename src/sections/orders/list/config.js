@@ -39,6 +39,7 @@ export const GET_LIST_COLUMN = ({
     title: 'Total Payment',
     dataIndex: 'totalPayment',
     key: 'totalPayment',
+    render: (_, { totalPayment }) => totalPayment.toFixed(2),
   },
   {
     title: 'Status',

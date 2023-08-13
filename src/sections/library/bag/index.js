@@ -139,7 +139,6 @@ export function LibraryBag({ open = false, books = {}, onClose }) {
       dispatch(resetBag())
       onClose()
     } catch (error) {
-      console.log(error)
       message.error(error?.message || 'Something went wrong!')
     }
   }

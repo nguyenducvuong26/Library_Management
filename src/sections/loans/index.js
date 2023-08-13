@@ -49,7 +49,6 @@ export function LoansSection() {
         `Successfully changed loan status #${option.loanId} into ${value}`
       )
     } catch (error) {
-      console.log(error)
       message.error(error?.message || 'Something went wrong!')
     }
   }

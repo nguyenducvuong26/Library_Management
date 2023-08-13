@@ -122,7 +122,6 @@ export default function General() {
         navigate(PATH_DASHBOARD.members.root)
       }
     } catch (error) {
-      console.log(error)
       message.error(error?.message || 'Some thing went wrong!')
     }
   }
@@ -143,6 +142,7 @@ export default function General() {
                 accept='image/png,image/jpeg,image/jpg'
                 onChange={handleChangeImage}
                 beforeUpload={() => false}
+                disabled={!canEdit}
               >
                 {imageFile ? (
                   <Image

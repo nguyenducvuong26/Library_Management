@@ -30,7 +30,6 @@ export default function ChangePassword() {
       resetFields()
       message.success('Update password success!')
     } catch (error) {
-      console.log(error)
       message.error(error?.message || 'Something went wrong!')
     }
   }

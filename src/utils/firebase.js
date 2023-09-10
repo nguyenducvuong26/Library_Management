@@ -14,13 +14,14 @@ import {
 } from 'firebase/storage'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDq1Hms3EQ-rA7J4sV1d0TStZGJuS9fZhw',
-  authDomain: 'library-management-fad9d.firebaseapp.com',
-  projectId: 'library-management-fad9d',
-  storageBucket: 'library-management-fad9d.appspot.com',
-  messagingSenderId: '581825639918',
-  appId: '1:581825639918:web:f7e3f8a9120b098a22caff',
-}
+  apiKey: "AIzaSyDq1Hms3EQ-rA7J4sV1d0TStZGJuS9fZhw",
+  authDomain: "library-management-fad9d.firebaseapp.com",
+  projectId: "library-management-fad9d",
+  storageBucket: "library-management-fad9d.appspot.com",
+  messagingSenderId: "581825639918",
+  appId: "1:581825639918:web:f7e3f8a9120b098a22caff",
+  measurementId: "G-4F9ECCLK3R"
+};
 
 // Initialize Firebase
 export const app = !getApps().length ? initializeApp(firebaseConfig) : getApp()
